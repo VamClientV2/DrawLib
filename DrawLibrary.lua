@@ -64,9 +64,18 @@ function Draw.Circle(type, sides, size)
 		})
 	end
 
+	local circle = {}
+	circle.Visible = true
+
 	if type == "FromMouse" then
 		RunService:BindToRenderStep(renderName, 1, function()
 			if not alive then return end
+			if not circle.Visible then
+				for _, data in frames do
+					data.frame.Visible = false
+				end
+				return
+			end
 			local mouseLocation = UserInputService:GetMouseLocation()
 			if mouseLocation then
 				for _, data in frames do
@@ -74,12 +83,15 @@ function Draw.Circle(type, sides, size)
 						0, mouseLocation.X + data.midX,
 						0, mouseLocation.Y + data.midY
 					)
+					data.frame.Visible = true
 				end
 			end
 		end)
 	end
 
-	local circle = {}
+	function circle:SetVisible(visible)
+		self.Visible = visible
+	end
 
 	function circle:Destroy()
 		alive = false
@@ -129,9 +141,18 @@ function Draw.Line(type, destination)
 		end
 	end
 
+	local line = {}
+	line.Visible = true
+
 	if type == "FromMouse" then
 		RunService:BindToRenderStep(renderName, 2, function()
 			if not alive then return end
+			if not line.Visible then
+				for _, frame in lineFrames do
+					frame.Visible = false
+				end
+				return
+			end
 			local mouseLocation = UserInputService:GetMouseLocation()
 			if not mouseLocation then
 				for _, frame in lineFrames do
@@ -172,7 +193,9 @@ function Draw.Line(type, destination)
 		end)
 	end
 
-	local line = {}
+	function line:SetVisible(visible)
+		self.Visible = visible
+	end
 
 	function line:Add(part)
 		if typeof(part) == "Instance" and part:IsA("BasePart") then
